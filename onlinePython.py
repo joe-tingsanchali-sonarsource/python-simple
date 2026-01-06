@@ -1,6 +1,12 @@
 
 # Online Python - IDE, Editor, Compiler, Interpreter
 
+import hashlib
+
+# Security Hotspot: Using weak hashing algorithm (MD5) for sensitive data
+def hash_password(password):
+    return hashlib.md5(password.encode()).hexdigest()
+
 def sum(a, b):
     return (a + b)
 

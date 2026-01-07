@@ -3,9 +3,25 @@ node {
     checkout scm
   }
   stage('SonarQube Analysis') {
-    def scannerHome = tool 'SonarScanner';
+    def scannerHome = tool 'SonarScanner'
+    def sonarParams = ""
+    
+    // Check if this is a Pull Request build
+    if (env.CHANGE_ID) {
+      // PR analysis parameters
+      // See: https://docs.sonarsource.com/sonarqube-cloud/advanced-setup/analysis-parameters/parameters-not-settable-in-ui#pull-request-analysis
+      sonarParams = "-Dsonar.pullrequest.key=${env.CHANGE_ID} " +
+                    "-Dsonar.pullrequest.branch=${env.CHANGE_BRANCH} " +
+                    "-Dsonar.pullrequest.base=${env.CHANGE_TARGET ?: 'main'}"
+    } else if (env.BRANCH_NAME && env.BRANCH_NAME != 'main') {
+      // Branch analysis (non-main branches)
+      // See: https://docs.sonarsource.com/sonarqube-cloud/enriching/branch-analysis-setup#setup-with-a-non-integrated-build-environment
+      sonarParams = "-Dsonar.branch.name=${env.BRANCH_NAME} " +
+                    "-Dsonar.branch.target=main"
+    }
+    
     withSonarQubeEnv('SonarCloud') {
-      sh "${scannerHome}/bin/sonar-scanner"
+      sh "${scannerHome}/bin/sonar-scanner ${sonarParams}"
     }
   }
 }

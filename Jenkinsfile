@@ -15,7 +15,9 @@ node {
                     "-Dsonar.pullrequest.base=${env.CHANGE_TARGET ?: 'main'}"
     } else if (env.BRANCH_NAME && env.BRANCH_NAME != 'main') {
       // Branch analysis (non-main branches)
-      sonarParams = "-Dsonar.branch.name=${env.BRANCH_NAME}"
+      // See: https://docs.sonarsource.com/sonarqube-cloud/enriching/branch-analysis-setup#setup-with-a-non-integrated-build-environment
+      sonarParams = "-Dsonar.branch.name=${env.BRANCH_NAME} " +
+                    "-Dsonar.branch.target=main"
     }
     
     withSonarQubeEnv('SonarCloud') {

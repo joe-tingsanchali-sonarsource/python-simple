@@ -1,0 +1,27 @@
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- checkout: self
+  fetchDepth: 0
+- task: SonarCloudPrepare@4
+  inputs:
+    SonarQube: 'sqcprod'
+    organization: 'joe-tingsanchali-sonarsource'
+    scannerMode: 'cli'
+    cliScannerVersion: '8.0.1.6346'
+    configMode: 'manual'
+    cliProjectKey: 'joe-tingsanchali-sonarsource_python-simple2'
+    cliProjectName: 'joe-tingsanchali-sonarsource_python-simple2'
+    cliSources: '.'
+    extraProperties: |
+      sonar.verbose=true
+- task: SonarCloudAnalyze@4
+  inputs:
+    jdkversion: 'JAVA_HOME_17_X64'
+- task: SonarCloudPublish@4
+  inputs:
+    pollingTimeoutSec: '300'

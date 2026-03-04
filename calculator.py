@@ -1,5 +1,6 @@
 import subprocess
 import pickle
+import random
 
 # BUG: Division by zero — no guard for empty list (sonar: python:S2190)
 def calculate_average(numbers):
@@ -44,6 +45,14 @@ def divide(a, b):
         pass
 
 
+# SECURITY HOTSPOT: Weak PRNG used for sensitive token generation (sonar: python:S2245)
+# random.random() is not cryptographically secure — use secrets module instead
+def generate_calculation_token():
+    token = random.randint(100000, 999999)
+    return token
+
+
 my_list = []  # The bug is triggered here
 result = calculate_average(my_list)
 print(f"The average is: {result}")
+print(f"Token: {generate_calculation_token()}")

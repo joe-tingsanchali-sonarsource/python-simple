@@ -1,0 +1,6 @@
+{
+    "sonarlint.connectedMode.project": {
+        "connectionId": "joe-tingsanchali-sonarsource",
+        "projectKey": "joe-tingsanchali-sonarsource_python-simple"
+    }
+}
